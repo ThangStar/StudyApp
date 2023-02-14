@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "EnglishStudyApp",
-    "slug": "EnglishStudyApp",
+    "slug": "studyapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +24,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.akthangdz.studyapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "565f3bf9-0a7a-4ef3-a52d-8e7ff622d5cc"
+      }
+    },
+    "owner": "akthangdz"
   }
 }
