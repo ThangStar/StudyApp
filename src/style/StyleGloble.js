@@ -12,14 +12,12 @@ const StyleGloble = StyleSheet.create({
           fontSize: 14,
           color: '#F8FAFC',
           textAlign: 'center',
-          marginTop: 8
      },
      textLeading2: {
           fontSize: 20,
           color: '#F8FAFC',
           textAlign: 'center',
           fontWeight: 'bold',
-          marginTop: 8
      }
 })
 export default StyleGloble

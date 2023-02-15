@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import WelcomeScreen from './screen/WelcomeScreen'
+import WelcomeScreen from './screens/WelcomeScreen'
 import { NavigationContainer } from '@react-navigation/native'
-import HomeScreen from './screen/HomeScreen'
+import HomeScreen from './screens/HomeScreen'
 import BottomNavHome from './navGraph/BottomNavHome'
-import LoginScreen from './screen/LoginScreen'
-import AuthScreen from './screen/AuthScreen'
-import QuizScreen from './screen/Quiz/QuizScreen'
+import LoginScreen from './screens/LoginScreen'
+import AuthScreen from './screens/AuthScreen'
+import QuizScreen from './screens/quizs/QuizScreen'
+import ResultCourseScreen from './screens/details/ResultCourseScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -25,6 +26,8 @@ const Main = () => {
                          component={AuthScreen} />
                     <Stack.Screen name="QuizScreen"
                          component={QuizScreen} />
+                    <Stack.Screen name="ResultCourseScreen"
+                         component={ResultCourseScreen} />
                </Stack.Navigator>
           </NavigationContainer>
      )
