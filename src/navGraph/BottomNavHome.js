@@ -10,7 +10,8 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { useTheme } from 'react-native-paper'
 
 const Tab = createMaterialBottomTabNavigator()
-const BottomNavHome = () => {
+const BottomNavHome = ({ route }) => {
+     let { infoUser } = route.params
      const theme = useTheme()
      theme.colors.secondaryContainer = "transperent"
      return (
@@ -34,19 +35,15 @@ const BottomNavHome = () => {
 
                     ),
                }}
-                    name="HomeScreen" component={HomeScreen} />
+                    name="HomeScreen" component={HomeScreen} initialParams={{ infoUser: infoUser }} />
                <Tab.Screen options={{
                     tabBarIcon: ({ color, size, focused }) => (
                          <IconButton disabled={true} style={{ backgroundColor: focused ? "#F59E0B" : null }} icon={(
-
                               <Icon color={color} size={18} name='book'></Icon>
                          )} />
-
-                    ),
-
+                    )
                }}
                     name="HomeScreen2" component={StudyScreen} />
-
                <Tab.Screen
                     options={{
                          tabBarIcon: ({ color, size, focused }) => (

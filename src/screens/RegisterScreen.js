@@ -1,16 +1,35 @@
-import { Animated, Dimensions, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Animated, Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import { StatusBar } from 'expo-status-bar'
-import Color from '../value/Color'
-import StyleGloble from '../style/StyleGloble'
-import Icon from 'react-native-vector-icons/Ionicons'
-import PagerView from 'react-native-pager-view';
 import MyButton from '../components/MyButton'
 import MyTextInput from '../components/MyTextInput'
 import { useForm } from 'react-hook-form'
+import Request from '../network/Request'
 
-const onSubmit = (data) => {
+const onSubmit = async (data) => {
+     let { fullname, email, password, username } = data
+     console.log('fullname: ' + data.fullname);
+     console.log('email: ' + data.email);
+     console.log('username: ' + data.username);
+     console.log('password: ' + data.password);
+     const rs = await Request.post('/register', {
+          fullname: fullname,
+          email: email,
+          username: username,
+          password: password
+     })
+     if (rs.status == 200) {
+          ToastAndroid.showWithGravity(
+               rs.data,
+               ToastAndroid.SHORT,
+               ToastAndroid.CENTER
+          );
+     }else{
+          ToastAndroid.showWithGravity(
+               "Lỗi mạng!",
+               ToastAndroid.SHORT,
+               ToastAndroid.CENTER
+          );
+     }
 
 }
 const RegisterScreen = () => {
@@ -22,50 +41,52 @@ const RegisterScreen = () => {
      });
      return (
           <View>
-               <MyTextInput
-                    label="Địa chỉ email"
-                    icon="mail"
-                    control = {control}
-                    errors = {errors}
+               <ScrollView showsVerticalScrollIndicator={false}>
 
-                    nameController = "email"
-                    contentError = "Địa chỉ email phải dạng: example@email.com"
-                    valuePattern = '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
-               />
-               <MyTextInput
-                    label="Tên đăng nhập"
-                    icon="person"
+                    <MyTextInput
+                         label="Họ và tên"
+                         icon="text"
+                         control={control}
+                         errors={errors}
+                         nameController="fullname"
+                         contentError="Địa chỉ email phải dạng: example@email.com"
+                         valuePattern="^(([a-zA-Z\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]*)([a-zA-Z\s\'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]*)([a-zA-Z\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]))*$"
+                    />
 
-                    control = {control}
-                    errors = {errors}
-                    nameController = "username"
-                    contentError = "Tên đăng nhập 5 đến 10 kí tự, không có kí tự đặc biệt"
-                    valuePattern = '^[a-zA-Z]{5,10}$'
+                    <MyTextInput
+                         label="Địa chỉ email"
+                         icon="mail"
+                         control={control}
+                         errors={errors}
 
-               />
-               <MyTextInput
-                    label="Mật khẩu"
-                    icon="lock-closed"
+                         nameController="email"
+                         contentError="Địa chỉ email phải dạng: example@email.com"
+                         valuePattern='^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+                    />
+                    <MyTextInput
+                         label="Tên đăng nhập"
+                         icon="person"
 
-                    control = {control}
-                    errors = {errors}
-                    nameController = "pass"
-                    contentError = "Mật khẩu 5-20 kí tự"
-                    valuePattern = '^[a-zA-Z!@#$%^&*()]{5,20}$'
+                         control={control}
+                         errors={errors}
+                         nameController="username"
+                         contentError="Tên đăng nhập 5 đến 10 kí tự, không có kí tự đặc biệt"
+                         valuePattern='^[a-zA-Z]{5,10}$'
 
-               />
-               <MyTextInput
-                    label="Nhập lại mật khẩu"
-                    icon="lock-closed"
+                    />
+                    <MyTextInput
+                         label="Mật khẩu"
+                         icon="lock-closed"
 
-                    control = {control}
-                    errors = {errors}
-                    nameController = "passAgain"
-                    contentError = "Nhập lại mật khẩu 5-20 kí tự"
-                    valuePattern = '^[a-zA-Z!@#$%^&*()]{5,20}$'
+                         control={control}
+                         errors={errors}
+                         nameController="password"
+                         contentError="Mật khẩu 5-20 kí tự"
+                         valuePattern='^[a-zA-Z!@#$%^&*()]{5,20}$'
 
-               />
-               <MyButton title="ĐĂNG KÍ" onPress = {handleSubmit(onSubmit)}/>
+                    />
+                    <MyButton title="ĐĂNG KÍ" onPress={handleSubmit(onSubmit)} />
+               </ScrollView>
           </View>
      )
 }

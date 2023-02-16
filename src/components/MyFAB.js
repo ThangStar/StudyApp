@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../value/Color'
 
 const MyFAB = (props) => {
-     let {isLogin, setIsLogin } = props
+     let { isLogin, setIsLogin, changeCurrentPager } = props
 
      const rotateFab = useRef(new Animated.Value(0)).current
      Animated.timing(rotateFab, {
@@ -42,6 +42,7 @@ const MyFAB = (props) => {
                          color={Color.onPrimary}
                          onPress={() => {
                               setIsLogin(!isLogin)
+                              changeCurrentPager(isLogin ? 1 : 0)
                          }}
                     >
                     </IconButton>

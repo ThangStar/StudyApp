@@ -8,16 +8,17 @@ const MyButton = (props) => {
      return (
           <View style={{
                alignItems: 'center',
-               marginVertical: 56,
+               marginVertical: 16,
           }}>
-               <TouchableOpacity style={{
-                    padding: 10,
-                    backgroundColor: "#511188ec",
-                    elevation: 6,
-                    borderRadius: 34,
-                    paddingVertical: 16,
-                    paddingHorizontal: 26
-               }}
+               <TouchableOpacity
+                    style={{
+                         padding: 10,
+                         backgroundColor: "#511188ec",
+                         elevation: 6,
+                         borderRadius: 34,
+                         paddingVertical: 16,
+                         paddingHorizontal: 26
+                    }}
                     onPress={() => onPress()}
                >
                     <Text style={[StyleGloble.textLeading, { fontSize: 16 }]}>

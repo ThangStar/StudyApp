@@ -105,7 +105,8 @@ const StudyScreen = ({ navigation, route }) => {
                               width: "100%",
                               borderBottomWidth: 1,
                               borderColor: 'white',
-                              marginVertical: 2
+                              marginVertical: 2,
+                              borderStyle: 'dashed'
                          }}></View>
                          <ContentQuiz
                               title={title}

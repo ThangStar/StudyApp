@@ -12,6 +12,7 @@ import MyLogo from '../components/MyLogo'
 import { Button, FAB, IconButton, Stack } from '@react-native-material/core'
 import MyFAB from '../components/MyFAB'
 import { MyProgress } from '../components/MyProgress'
+import AnimatedLottieView from 'lottie-react-native'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -47,9 +48,34 @@ const AuthScreen = ({ navigation }) => {
           inputRange: [0, 1],
           outputRange: [-withProgress / 2, withProgress / 2]
      })
+
+     const [isProgress, setIsProgress] = useState(false)
+
+     const refPager = useRef(PagerView);
+
+     const changeCurrentPager = (pos = new Number) => {
+          refPager.current.setPage(pos)
+     }
+
      return (
           <SafeAreaView style={{ flex: 1 }}>
                <StatusBar style='light' />
+
+               {
+                    isProgress ?
+                         <AnimatedLottieView
+                              style={{
+                                   position: 'absolute',
+                                   zIndex: 2,
+                                   backgroundColor: '#0000004f',
+                                   top: 0
+                              }}
+                              autoPlay={true}
+                              loop={true}
+                              source={require('../res/64036-planet.json')} />
+                         : null
+               }
+
                <View style={{
                     flex: 1
                }}>
@@ -90,14 +116,21 @@ const AuthScreen = ({ navigation }) => {
 
                               }}>
                                    <Text style={[StyleGloble.textLeading, { opacity: isLogin ? 1 : 0.3 }]}
-                                        onPress={() => setIsLogin(true)}>Đăng nhập</Text>
+                                        onPress={() => {
+                                             setIsLogin(true)
+                                             changeCurrentPager(0)
+                                        }}>Đăng nhập</Text>
                                    <Text
                                         style={[StyleGloble.textLeading, { opacity: isLogin ? 0.3 : 1 }]}
-                                        onPress={() => setIsLogin(false)}>
+                                        onPress={() => {
+                                             setIsLogin(false)
+                                             changeCurrentPager(1)
+                                        }}>
                                         Đăng kí
                                    </Text>
                               </View>
                               <PagerView
+                                   ref={refPager}
                                    onPageSelected={(e) => {
                                         e.nativeEvent.position == 0 ? setIsLogin(true) : setIsLogin(false)
                                    }}
@@ -107,7 +140,7 @@ const AuthScreen = ({ navigation }) => {
                                         flex: 1
                                    }}>
                                    <View key={2}>
-                                        <LoginScreen navigation={navigation} />
+                                        <LoginScreen setIsProgress={setIsProgress} navigation={navigation} />
                                    </View>
                                    <View key={1}>
                                         <RegisterScreen />
@@ -115,6 +148,7 @@ const AuthScreen = ({ navigation }) => {
                               </PagerView>
                               {
                                    isHideFab ? null : <MyFAB
+                                        changeCurrentPager={changeCurrentPager}
                                         isLogin={isLogin}
                                         setIsLogin={setIsLogin} />
                               }

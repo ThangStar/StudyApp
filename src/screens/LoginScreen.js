@@ -1,43 +1,78 @@
-import { Animated, Button, Dimensions, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import { StatusBar } from 'expo-status-bar'
+import { Animated, Button, Dimensions, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Color from '../value/Color'
-import StyleGloble from '../style/StyleGloble'
-import Icon from 'react-native-vector-icons/Ionicons'
-import PagerView from 'react-native-pager-view';
 import MyButton from '../components/MyButton'
 import MyTextInput from '../components/MyTextInput'
 import { useForm } from 'react-hook-form'
+import Request from '../network/Request'
+import * as LocalStorage from '../storage/LocalStorage'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const onSubmit = (data, navigation) => {
-     console.log(data);
-     navigation.navigate('BottomTabHome')
-}
-const LoginScreen = (props) => {
-     let { navigation } = props
-     const [userName, setUserName] = useState('')
-     const [passWord, setPassWord] = useState('')
 
-     const { control, formState: { errors }, handleSubmit } = useForm({
+const onSubmit = async (data, navigation, setIsProgress) => {
+     setIsProgress(true)
+     const res = await Request.post('/login', {
+          username: data.userName,
+          password: data.passWord
+     })
+     if (res.data.length > 0) {
+
+          //save data 
+
+          //login success!
+          var usernamePush = await LocalStorage.PushDataFromStorage("INFO_USER", JSON.stringify(res.data))
+          console.log(usernamePush);
+          setIsProgress(false)
+          navigation.navigate('BottomTabHome', {
+               infoUser: res.data
+          })
+     } else {
+          //login faile!
+          ToastAndroid.showWithGravity(
+               "Tài khoản hoặc mật khẩu không chính xác!",
+               ToastAndroid.SHORT,
+               ToastAndroid.CENTER
+          );
+          setIsProgress(false)
+
+     }
+}
+
+
+const LoginScreen = (props) => {
+     let { navigation, setIsProgress } = props
+
+
+     const { control, formState: { errors }, handleSubmit, setValue } = useForm({
           defaultValues: {
-               userName: '',
-               passWord: ''
+               userName: 'dakps',
+               passWord: '1'
           }
      });
+
+     useEffect(() => {
+
+          const initDataLogin = async () => {
+               var infoUser = await LocalStorage.GetDataFromStorage("INFO_USER")
+               setValue('userName', JSON.parse(infoUser)[0].username)
+               setValue('passWord', JSON.parse(infoUser)[0].password)
+          }
+          initDataLogin()
+       
+     }, [])
+
      return (
           <View>
+
                <MyTextInput
                     label="Tên đăng nhập"
                     icon="mail"
-                    setValue={setPassWord}
                     control={control}
                     errors={errors}
                     nameController="userName"
                     contentError="Tên đăng nhập 5 đến 10 kí tự, không có kí tự đặc biệt"
-                    valuePattern='^[a-zA-Z]{5,10}$'
+                    valuePattern='^[a-zA-Z0-9]{5,10}$'
                />
                <MyTextInput
                     label="Mật khẩu"
@@ -47,24 +82,19 @@ const LoginScreen = (props) => {
                     nameIconPassEnable="eye"
                     nameIconPassDisable="eye-off"
 
-                    setValue={setPassWord}
                     control={control}
                     errors={errors}
                     nameController="passWord"
                     contentError="Mật khẩu 5-20 kí tự"
-                    valuePattern='^[a-zA-Z!@#$%^&*()]{5,20}$'
-
-
+                    valuePattern='^[a-zA-Z0-9!@#$%^&*()]{5,20}$'
 
                />
                <MyButton
                     title="ĐĂNG NHẬP"
                     onPress={
                          handleSubmit((data) => {
-                              onSubmit(data, navigation)
+                              onSubmit(data, navigation, setIsProgress)
                          })
-                 
-
                     }
                />
           </View>
