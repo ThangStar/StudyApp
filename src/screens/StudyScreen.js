@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { LinearGradient } from 'expo-linear-gradient'
 import Color from '../value/Color'
-import { Avatar, TextInput as TextInputMT, Box, Dialog, DialogActions, DialogContent, DialogHeader, IconButton, Provider, Stack } from '@react-native-material/core'
+import { Avatar, TextInput as TextInputMT, Box, Dialog, DialogActions, DialogContent, DialogHeader, IconButton, Provider, Stack, HStack } from '@react-native-material/core'
 import Icon from 'react-native-vector-icons/Ionicons'
 import AnimatedLottieView from 'lottie-react-native'
 import StyleGloble from '../style/StyleGloble'
@@ -19,6 +19,9 @@ import MyFabInsert from '../components/MyFabInsert'
 import MyUpdateDialog from '../components/MyUpdateDialog'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { String } from '../value/String'
+import MyButton from '../components/MyButton'
+import * as ImagePicker from 'expo-image-picker'
+import { BaseURL } from '../network/Request'
 
 
 const StudyScreen = ({ navigation }) => {
@@ -42,18 +45,6 @@ const StudyScreen = ({ navigation }) => {
       }
     }
     GetDataFromStorage("NUMBER_COURSE_STUDIED")
-  })
-
-  useEffect(() => {
-    const GetTitleCourse = async () => {
-      try {
-        const dataTitle = await Request.get('/title-course')
-        console.log(dataTitle.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    GetTitleCourse()
   }, [])
 
   const [wordSearch, setWordSearch] = useState('')
@@ -179,7 +170,7 @@ const StudyScreen = ({ navigation }) => {
                   visibleUpdate={visibleUpdate}
                   setVisibleUpdate={setVisibleUpdate}
                   key={item.id}
-                  id={item.id} nameTitle={item.name_title} DelItemCourse={DelItemCourse} />
+                  id={item.id} titleCourse={item} DelItemCourse={DelItemCourse} />
               )
             }}
           >
@@ -213,11 +204,49 @@ const StudyScreen = ({ navigation }) => {
 const MyDialog = (props) => {
   let { visible, setVisible, setTitleCourse, titleCourse } = props
   const [content, setContent] = useState('')
+  const [imageUri, setImageUri] = useState(null)
+
+  const PicImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+      console.log("result is: " + result.assets[0].uri);
+    }
+  }
+
   return (
     <Dialog visible={visible} onDismiss={() => setVisible(false)}>
       <DialogHeader title="Thêm bài học" />
+
       <DialogContent>
         <Stack spacing={2}>
+          <HStack style={{
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Image
+              style={{
+                resizeMode: 'cover',
+                width: "100%",
+                height: 120,
+                borderRadius: 8
+              }}
+              source={imageUri != null ? { uri: imageUri } : require('../res/image_default.png')} />
+            <MyButton title="Chọn ảnh" onPress={() => {
+
+              PicImage()
+
+
+            }} />
+          </HStack>
           <TextInputMT
             inputContainerStyle={{ marginTop: 8 }}
             label="Nhập tên"
@@ -241,6 +270,16 @@ const MyDialog = (props) => {
           onPress={async () => {
             setVisible(false)
             await DAOTitleCourse.InsertCourse(content)
+
+            //UploadImage
+            var formData = new FormData()
+            formData.append('image', {
+              uri: imageUri,
+              name: Date.now().toString() + '.jpg',
+              type: 'image/jpeg'
+            })
+            DAOTitleCourse.UploadImageCourse(formData)
+
             DAOTitleCourse.GetTitleCourse(setTitleCourse)
           }}
         />
@@ -264,7 +303,7 @@ const MySearch = (props) => {
         borderWidth: 1,
         borderRadius: 12,
         paddingHorizontal: 12,
-        paddingVertical: 4
+        paddingVertical: 4,
       }}>
       <View style={{
         flex: 1
@@ -288,12 +327,10 @@ const MySearch = (props) => {
 }
 
 const ItemCourse = (props) => {
-  let { navigation, nameTitle, title, id, DelItemCourse, setCurrentNameUpdate, setVisibleUpdate, visibleUpdate, setCurrentIdUpate } = props
+  let { navigation, titleCourse, title, id, DelItemCourse, setCurrentNameUpdate, setVisibleUpdate, visibleUpdate, setCurrentIdUpate } = props
   const [isExpand, setisExpand] = useState(false)
   return (
     <TouchableOpacity onPress={() => {
-      console.log("NAME TITLE IS: " + nameTitle);
-      console.log("TITLE IS: " + title);
       navigation.navigate('QuizScreen', {
         id: id,
         title: title
@@ -306,13 +343,14 @@ const ItemCourse = (props) => {
         marginVertical: 16,
         height: 140,
         backgroundColor: '#33ff0021',
-        borderRadius: 18,
+        borderRadius: 12,
         borderColor: Color.text,
+        overflow: 'hidden'
       }}>
         <ImageBackground
           resizeMode='cover'
-          imageStyle={{ opacity: 0.3, borderRadius: 18 }}
-          source={require('../res/img_word_tech.png')}
+          imageStyle={{ opacity: 0.3 }}
+          source={{uri: BaseURL+titleCourse.url_image}}
           style={{
             flex: 1,
             width: '100%',
@@ -324,7 +362,7 @@ const ItemCourse = (props) => {
             <Text style={[StyleGloble.textLeading2, {
               fontWeight: 'normal', textAlign: 'justify', fontSize: 18,
               marginEnd: 36
-            }]}>{nameTitle}</Text>
+            }]}>{titleCourse.name_title}</Text>
             <IconButton
               onPress={() => setisExpand(!isExpand)}
               style={{

@@ -1,9 +1,10 @@
-import { Animated, Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Animated, Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import MyButton from '../components/MyButton'
 import MyTextInput from '../components/MyTextInput'
 import { useForm } from 'react-hook-form'
 import Request from '../network/Request'
+import * as LocalStorage from '../storage/LocalStorage'
 
 const onSubmit = async (data) => {
      let { fullname, email, password, username } = data
@@ -23,11 +24,12 @@ const onSubmit = async (data) => {
                ToastAndroid.SHORT,
                ToastAndroid.CENTER
           );
-     }else{
+          await LocalStorage.PushDataFromStorage("INFO_USER", JSON.stringify(data))
+     } else {
           ToastAndroid.showWithGravity(
                "Lỗi mạng!",
                ToastAndroid.SHORT,
-               ToastAndroid.CENTER
+               ToastAndroid.CENTER 
           );
      }
 
@@ -82,7 +84,7 @@ const RegisterScreen = () => {
                          errors={errors}
                          nameController="password"
                          contentError="Mật khẩu 5-20 kí tự"
-                         valuePattern='^[a-zA-Z!@#$%^&*()]{5,20}$'
+                         valuePattern='^[a-zA-Z!@#$%^&*()0-9]{5,20}$'
 
                     />
                     <MyButton title="ĐĂNG KÍ" onPress={handleSubmit(onSubmit)} />

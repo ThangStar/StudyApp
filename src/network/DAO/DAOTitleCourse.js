@@ -11,13 +11,13 @@ const DAOTitleCourse = {
                const res = await Request.post('/delete-course', {
                     id: id
                })
-               if(res.status == 200){
+               if (res.status == 200) {
                     ToastAndroid.showWithGravity(
                          String.DEL_SUCCESS,
                          ToastAndroid.SHORT,
                          ToastAndroid.CENTER
                     );
-               }else {
+               } else {
                     ToastAndroid.showWithGravity(
                          String.DEL_FAILE,
                          ToastAndroid.SHORT,
@@ -47,7 +47,7 @@ const DAOTitleCourse = {
                          ToastAndroid.SHORT,
                          ToastAndroid.CENTER
                     );
-               }else {
+               } else {
                     ToastAndroid.showWithGravity(
                          String.ADD_FAILE,
                          ToastAndroid.SHORT,
@@ -85,7 +85,7 @@ const DAOTitleCourse = {
                          ToastAndroid.SHORT,
                          ToastAndroid.CENTER
                     );
-               }else {
+               } else {
                     ToastAndroid.showWithGravity(
                          String.UPDATE_FAILE,
                          ToastAndroid.SHORT,
@@ -101,7 +101,28 @@ const DAOTitleCourse = {
                     ToastAndroid.CENTER
                );
           }
+     },
+
+     //data is uri
+     UploadImageCourse: async (data = new FormData()) => {
+          try {
+               const PostResponse =
+                    await Request('/upload', {
+                         method: 'post',
+                         data: data,
+                         headers: {
+                              Accept: 'application/json',
+                              "Content-Type": 'multipart/form-data'
+                         }
+
+                    })
+               console.log(PostResponse);
+          } catch (error) {
+               console.log(error);
+          }
      }
+
+
 }
 
 export default DAOTitleCourse

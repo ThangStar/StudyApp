@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { LinearGradient } from 'expo-linear-gradient'
 import AnimatedLottieView from 'lottie-react-native'
-import { Alert, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Animated, Button, Dimensions, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Color from '../../value/Color'
 import StyleGloble from '../../style/StyleGloble'
 import { Divider, Spacer } from '@react-native-material/core'
@@ -11,9 +11,15 @@ import { Audio } from 'expo-av'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const soundBackground = [
-     "../../res/sounds/background1.mp3",
-     "../../res/sounds/background2.wav"
+     require("../../res/sounds/background1.mp3"),
+     require("../../res/sounds/background2.wav")
 ]
+
+const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
+
+const paddingDefault = 12
+const widthFixed = windowWidth - paddingDefault * 2
 
 const saveStorageData = async (key, value) => {
      try {
@@ -42,9 +48,10 @@ const GetDataFromStorage = async (key) => {
 const StudyScreen = ({ navigation, route }) => {
      let { id, title } = route.params
 
+
      const [sound, setSound] = useState();
      async function playSoundBackground() {
-          const { sound } = await Audio.Sound.createAsync(require("../../res/sounds/background1.mp3"));
+          const { sound } = await Audio.Sound.createAsync(soundBackground[Math.floor(Math.random()*soundBackground.length)]);
           setSound(sound);
           sound.setVolumeAsync(0.3)
           await sound.setIsLoopingAsync(true)
@@ -92,6 +99,8 @@ const StudyScreen = ({ navigation, route }) => {
                               paddingHorizontal: 12,
                               paddingTop: 16
                          }}>
+                         {/* dialog progress */}
+
                          <LogoAndProfile />
                          <View style={{
                               flexDirection: 'column',
@@ -178,6 +187,20 @@ const ContentQuiz = (props) => {
           }
      }, [dataListWord, currentIndex])
 
+     const refTranslateX = useRef(new Animated.Value(-widthFixed)).current
+     const refTranslateXImg = useRef(new Animated.Value(0)).current
+     const StartAnim = () => {
+          Animated.timing(refTranslateX, {
+               toValue: 0,
+               useNativeDriver: true,
+               duration: 3000
+          }).start()
+     }
+
+     const ResetValueAnim = () => {
+          refTranslateX.setValue(-widthFixed)
+     }
+     const [isDisable, setisDisable] = useState(false)
      return (
           <View style={{
                flex: 1,
@@ -195,9 +218,36 @@ const ContentQuiz = (props) => {
                               opacity: 0.8,
                          }}
                          source={require('../../res/img_word_tech.png')} />
+
                </View>
                <View style={{
+
                }}>
+                    {/* Progress */}
+                    <View style={{
+                         marginBottom: 10
+
+                    }}>
+
+                         <View style={{
+                              backgroundColor: Color.onSuface,
+                              borderRadius: 18,
+                              overflow: 'hidden',
+
+                         }}>
+                              <Animated.View
+                                   style={{
+                                        backgroundColor: Color.onSecondary,
+                                        width: '100%',
+                                        height: 10,
+                                        borderRadius: 18,
+                                        transform: [{ translateX: refTranslateX }]
+                                   }}>
+                              </Animated.View>
+                         </View>
+                    </View>
+
+
                     <Text style={StyleGloble.textLeading}>
                          {dataListWord[currentIndex] != undefined ?
                               dataListWord[currentIndex].name : null}
@@ -215,6 +265,10 @@ const ContentQuiz = (props) => {
                     marginBottom: 46
                }}>
                     <ItemQuizAnswer
+                    setisDisable = {setisDisable}
+                    isDisable = {isDisable}
+                         ResetValueAnim={ResetValueAnim}
+                         startAnim={StartAnim}
                          title={title}
                          setSound={setSound}
                          playSoundTrueAnswer={playSoundTrueAnswer}
@@ -222,25 +276,34 @@ const ContentQuiz = (props) => {
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[0]} />
                     <ItemQuizAnswer
+                    setisDisable = {setisDisable}
+                    isDisable = {isDisable}
+                         ResetValueAnim={ResetValueAnim}
                          title={title}
-
+                         startAnim={StartAnim}
                          setSound={setSound}
                          playSoundTrueAnswer={playSoundTrueAnswer}
                          playSoundFalseAnswer={playSoundFalseAnswer}
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[1]} />
                     <ItemQuizAnswer
+                    setisDisable = {setisDisable}
+                    isDisable = {isDisable}
+                         ResetValueAnim={ResetValueAnim}
                          title={title}
 
                          setSound={setSound}
-
+                         startAnim={StartAnim}
                          playSoundTrueAnswer={playSoundTrueAnswer}
                          playSoundFalseAnswer={playSoundFalseAnswer}
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[2]} />
                     <ItemQuizAnswer
+                    setisDisable = {setisDisable}
+                    isDisable = {isDisable}
+                         ResetValueAnim={ResetValueAnim}
                          title={title}
-
+                         startAnim={StartAnim}
                          setSound={setSound}
 
                          playSoundTrueAnswer={playSoundTrueAnswer}
@@ -255,17 +318,21 @@ const ContentQuiz = (props) => {
 const ItemQuizAnswer = (props) => {
      let { text, trueAnswer, setCurrentIndex, currentIndex,
           lengthWord, navigation, setCurrentScore, currentScore,
-          playSoundTrueAnswer, playSoundFalseAnswer, setSound, title } = props
+          playSoundTrueAnswer, playSoundFalseAnswer, setSound, title,
+          startAnim, ResetValueAnim,setisDisable, isDisable } = props
 
      //1: true, 2: false, 3: default
      const [isTrue, setIsTrue] = useState(3)
      return (
           <TouchableOpacity
+               disabled={isDisable}
                onPress={async () => {
+                    setisDisable(true)
+                    startAnim()
                     if (text === trueAnswer) {
                          var currentNumber = await GetDataFromStorage("NUMBER_COURSE_STUDIED")
                          currentNumber = ++currentNumber
-                         await saveStorageData("NUMBER_COURSE_STUDIED",currentNumber.toString())
+                         await saveStorageData("NUMBER_COURSE_STUDIED", currentNumber.toString())
                          setIsTrue(1)
                          setCurrentScore(++currentScore)
                          playSoundTrueAnswer()
@@ -274,6 +341,7 @@ const ItemQuizAnswer = (props) => {
                          playSoundFalseAnswer()
                     }
                     setTimeout(() => {
+                         setisDisable(false)
                          setIsTrue(3)
                          const targetIndex = ++currentIndex
 
@@ -289,7 +357,8 @@ const ItemQuizAnswer = (props) => {
                          } else {
                               setCurrentIndex(targetIndex)
                          }
-                    }, 2000);
+                         ResetValueAnim()
+                    }, 3000);
                }}
                style={{
                     backgroundColor: '#22c55e44',

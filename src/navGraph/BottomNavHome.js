@@ -11,7 +11,11 @@ import { useTheme } from 'react-native-paper'
 
 const Tab = createMaterialBottomTabNavigator()
 const BottomNavHome = ({ route }) => {
-     let { infoUser } = route.params
+     // let { infoUser } = route.params
+     //dafault
+     const infoUser = {
+          full_name: "ADMIN2"
+     }
      const theme = useTheme()
      theme.colors.secondaryContainer = "transperent"
      return (

@@ -4,7 +4,7 @@ import StyleGloble from '../style/StyleGloble'
 
 
 const MyButton = (props) => {
-     let { title, onPress } = props
+     let { title, onPress = () => {} } = props
      return (
           <View style={{
                alignItems: 'center',

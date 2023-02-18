@@ -6,6 +6,7 @@ import MyTextInput from '../components/MyTextInput'
 import { useForm } from 'react-hook-form'
 import Request from '../network/Request'
 import * as LocalStorage from '../storage/LocalStorage'
+import { String } from '../value/String'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,15 +18,13 @@ const onSubmit = async (data, navigation, setIsProgress) => {
           password: data.passWord
      })
      if (res.data.length > 0) {
-
           //save data 
 
           //login success!
           var usernamePush = await LocalStorage.PushDataFromStorage("INFO_USER", JSON.stringify(res.data))
           console.log(usernamePush);
-          setIsProgress(false)
           navigation.navigate('BottomTabHome', {
-               infoUser: res.data
+               infoUser: res.data[0]
           })
      } else {
           //login faile!
@@ -34,9 +33,10 @@ const onSubmit = async (data, navigation, setIsProgress) => {
                ToastAndroid.SHORT,
                ToastAndroid.CENTER
           );
-          setIsProgress(false)
 
      }
+     setIsProgress(false)
+
 }
 
 
@@ -46,8 +46,8 @@ const LoginScreen = (props) => {
 
      const { control, formState: { errors }, handleSubmit, setValue } = useForm({
           defaultValues: {
-               userName: 'dakps',
-               passWord: '1'
+               userName: '',
+               passWord: ''
           }
      });
 
@@ -55,11 +55,13 @@ const LoginScreen = (props) => {
 
           const initDataLogin = async () => {
                var infoUser = await LocalStorage.GetDataFromStorage("INFO_USER")
-               setValue('userName', JSON.parse(infoUser)[0].username)
-               setValue('passWord', JSON.parse(infoUser)[0].password)
+               if (infoUser != "NO VALUE") {
+                    setValue('userName', JSON.parse(infoUser)[0].username)
+                    setValue('passWord', JSON.parse(infoUser)[0].password)
+               }
           }
           initDataLogin()
-       
+
      }, [])
 
      return (

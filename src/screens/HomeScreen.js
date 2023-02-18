@@ -10,7 +10,8 @@ import StyleGloble from '../style/StyleGloble'
 import Request from '../network/Request'
 import { Dialog } from 'react-native-paper'
 
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
+     let { infoUser } = route.params
      useEffect(() => {
           const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
           return () => backHandler.remove()
@@ -52,7 +53,7 @@ const HomeScreen = () => {
                               paddingTop: 26
                          }}
                          source={require('../res/img_onPrimary.png')}>
-                         <LogoAndNav />
+                         <LogoAndNav infoUser={infoUser} />
                          <ScrollView>
 
 
@@ -150,6 +151,7 @@ const ItemMenu = (props) => {
      )
 }
 function LogoAndNav(props) {
+     let {infoUser} = props
      return (
           <View>
                <View style={{
@@ -186,7 +188,7 @@ function LogoAndNav(props) {
                                    color: Color.onSecondary,
                                    letterSpacing: 2,
                               }}>
-                                   Thắng
+                                   {infoUser.full_name.split(" ").pop()}
                               </Text>
                          </VStack>
                     </View >

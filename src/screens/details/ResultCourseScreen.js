@@ -10,12 +10,18 @@ import MyButton from '../../components/MyButton'
 import MyButtonIcon from '../../components/MyButtonIcon'
 import { Audio } from 'expo-av'
 
+const SoundWinGame = [
+     require("../../res/sounds/win_game_2.mp3"),
+     require("../../res/sounds/win_game_1.mp3"),
+
+]
+
 const ResultCourseScreen = ({ navigation, route }) => {
      let { currentScore, numberQuestion, title } = route.params
 
      const [sound, setSound] = useState();
      async function playSoundBackground() {
-          const { sound } = await Audio.Sound.createAsync(require("../../res/sounds/win_game_2.mp3"));
+          const { sound } = await Audio.Sound.createAsync(SoundWinGame[Math.floor(Math.random()*SoundWinGame.length)]);
           setSound(sound);
           await sound.setVolumeAsync(0.6)
           await sound.playAsync();
