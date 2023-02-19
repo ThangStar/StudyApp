@@ -205,8 +205,8 @@ const ContentQuiz = (props) => {
           refTranslateX.setValue(-widthFixed)
      }
      const [isDisable, setisDisable] = useState(false)
-     const [titleWord, setTitleWord] = useState()
-     //speed
+
+     //speak
      useEffect(() => {
           const speedWord = async () => {
                if (dataListWord[currentIndex] != undefined) {
