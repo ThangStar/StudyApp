@@ -269,8 +269,6 @@ const MyDialog = (props) => {
           variant="text"
           onPress={async () => {
             setVisible(false)
-            await DAOTitleCourse.InsertCourse(content)
-
             //UploadImage
             var formData = new FormData()
             formData.append('image', {
@@ -278,7 +276,8 @@ const MyDialog = (props) => {
               name: Date.now().toString() + '.jpg',
               type: 'image/jpeg'
             })
-            DAOTitleCourse.UploadImageCourse(formData)
+            formData.append("title", content)
+            await DAOTitleCourse.InsertCourse(formData)
 
             DAOTitleCourse.GetTitleCourse(setTitleCourse)
           }}
@@ -333,9 +332,10 @@ const ItemCourse = (props) => {
     <TouchableOpacity onPress={() => {
       navigation.navigate('QuizScreen', {
         id: id,
-        title: title
+        title: title,
+        imageTarget: titleCourse.url_image
       })
-      console.log('id send: ' + id);
+
     }}>
 
       <View style={{
@@ -350,7 +350,7 @@ const ItemCourse = (props) => {
         <ImageBackground
           resizeMode='cover'
           imageStyle={{ opacity: 0.3 }}
-          source={{uri: BaseURL+titleCourse.url_image}}
+          source={{ uri: BaseURL + titleCourse.url_image }}
           style={{
             flex: 1,
             width: '100%',

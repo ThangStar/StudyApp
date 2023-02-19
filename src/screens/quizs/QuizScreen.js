@@ -9,11 +9,14 @@ import { Divider, Spacer } from '@react-native-material/core'
 import Request from '../../network/Request'
 import { Audio } from 'expo-av'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { BaseURL } from '../../network/Request'
+import * as Speech from 'expo-speech';
 
 const soundBackground = [
      require("../../res/sounds/background1.mp3"),
      require("../../res/sounds/background2.wav")
 ]
+
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -46,14 +49,14 @@ const GetDataFromStorage = async (key) => {
 }
 
 const StudyScreen = ({ navigation, route }) => {
-     let { id, title } = route.params
+     let { id, title, imageTarget } = route.params
 
 
      const [sound, setSound] = useState();
      async function playSoundBackground() {
-          const { sound } = await Audio.Sound.createAsync(soundBackground[Math.floor(Math.random()*soundBackground.length)]);
+          const { sound } = await Audio.Sound.createAsync(soundBackground[Math.floor(Math.random() * soundBackground.length)]);
           setSound(sound);
-          sound.setVolumeAsync(0.3)
+          sound.setVolumeAsync(0.1)
           await sound.setIsLoopingAsync(true)
           await sound.playAsync();
      }
@@ -118,6 +121,7 @@ const StudyScreen = ({ navigation, route }) => {
                               borderStyle: 'dashed'
                          }}></View>
                          <ContentQuiz
+                              imageTarget={imageTarget}
                               title={title}
                               setSound={setSound}
                               setCurrentScore={setCurrentScore}
@@ -134,7 +138,7 @@ const StudyScreen = ({ navigation, route }) => {
 
 const ContentQuiz = (props) => {
      let { dataListWord, currentIndex, setCurrentIndex, navigation,
-          currentScore, setCurrentScore, setSound, title } = props
+          currentScore, setCurrentScore, setSound, title, imageTarget } = props
      const [soundTrue, setSoundTrue] = useState();
      const [soundFalse, setSoundFalse] = useState();
 
@@ -201,6 +205,17 @@ const ContentQuiz = (props) => {
           refTranslateX.setValue(-widthFixed)
      }
      const [isDisable, setisDisable] = useState(false)
+     const [titleWord, setTitleWord] = useState()
+     //speed
+     useEffect(() => {
+          const speedWord = async () => {
+               if (dataListWord[currentIndex] != undefined) {
+                    Speech.speak(dataListWord[currentIndex].name)
+               }
+          }
+          speedWord()
+     }, [dataListWord, currentIndex])
+
      return (
           <View style={{
                flex: 1,
@@ -217,7 +232,7 @@ const ContentQuiz = (props) => {
                               borderRadius: 18,
                               opacity: 0.8,
                          }}
-                         source={require('../../res/img_word_tech.png')} />
+                         source={{ uri: BaseURL + imageTarget }} />
 
                </View>
                <View style={{
@@ -265,8 +280,8 @@ const ContentQuiz = (props) => {
                     marginBottom: 46
                }}>
                     <ItemQuizAnswer
-                    setisDisable = {setisDisable}
-                    isDisable = {isDisable}
+                         setisDisable={setisDisable}
+                         isDisable={isDisable}
                          ResetValueAnim={ResetValueAnim}
                          startAnim={StartAnim}
                          title={title}
@@ -276,8 +291,8 @@ const ContentQuiz = (props) => {
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[0]} />
                     <ItemQuizAnswer
-                    setisDisable = {setisDisable}
-                    isDisable = {isDisable}
+                         setisDisable={setisDisable}
+                         isDisable={isDisable}
                          ResetValueAnim={ResetValueAnim}
                          title={title}
                          startAnim={StartAnim}
@@ -287,8 +302,8 @@ const ContentQuiz = (props) => {
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[1]} />
                     <ItemQuizAnswer
-                    setisDisable = {setisDisable}
-                    isDisable = {isDisable}
+                         setisDisable={setisDisable}
+                         isDisable={isDisable}
                          ResetValueAnim={ResetValueAnim}
                          title={title}
 
@@ -299,8 +314,8 @@ const ContentQuiz = (props) => {
                          setCurrentScore={setCurrentScore}
                          currentScore={currentScore} navigation={navigation} lengthWord={dataListWord.length} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} trueAnswer={dataListWord[currentIndex]?.answer} text={listAnswer[2]} />
                     <ItemQuizAnswer
-                    setisDisable = {setisDisable}
-                    isDisable = {isDisable}
+                         setisDisable={setisDisable}
+                         isDisable={isDisable}
                          ResetValueAnim={ResetValueAnim}
                          title={title}
                          startAnim={StartAnim}
@@ -319,7 +334,7 @@ const ItemQuizAnswer = (props) => {
      let { text, trueAnswer, setCurrentIndex, currentIndex,
           lengthWord, navigation, setCurrentScore, currentScore,
           playSoundTrueAnswer, playSoundFalseAnswer, setSound, title,
-          startAnim, ResetValueAnim,setisDisable, isDisable } = props
+          startAnim, ResetValueAnim, setisDisable, isDisable } = props
 
      //1: true, 2: false, 3: default
      const [isTrue, setIsTrue] = useState(3)

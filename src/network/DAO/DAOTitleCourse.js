@@ -2,6 +2,8 @@ import { StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import React from 'react'
 import Request from '../Request';
 import { String } from '../../value/String';
+import axios from 'axios';
+import { BaseURL } from '../Request';
 
 const DAOTitleCourse = {
      DeleteCourse: async (id) => {
@@ -34,11 +36,16 @@ const DAOTitleCourse = {
           }
      },
 
-     InsertCourse: async (nameTitle) => {
+     InsertCourse: async (formData) => {
           try {
-               console.log('loadAgain');
-               const data = await Request.post('/insert-course', {
-                    nameTitle: nameTitle
+               const data = await axios({
+                    method: 'post',
+                    baseURL: BaseURL+"/insert-course",
+                    data: formData,
+                    headers: {
+                         Accept: 'application/json',
+                         "Content-Type": 'multipart/form-data'
+                    }
                })
                console.log(data.data);
                if (data.status == 200) {
