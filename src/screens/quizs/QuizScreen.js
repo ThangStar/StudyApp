@@ -48,7 +48,7 @@ const GetDataFromStorage = async (key) => {
      }
 }
 
-const StudyScreen = ({ navigation, route }) => {
+const QuizScreen = ({ navigation, route }) => {
      let { id, title, imageTarget } = route.params
 
 
@@ -356,7 +356,7 @@ const ItemQuizAnswer = (props) => {
                          playSoundFalseAnswer()
                     }
                     setTimeout(() => {
-                         setisDisable(false)
+                         console.log('im in');
                          setIsTrue(3)
                          const targetIndex = ++currentIndex
 
@@ -373,6 +373,8 @@ const ItemQuizAnswer = (props) => {
                               setCurrentIndex(targetIndex)
                          }
                          ResetValueAnim()
+                         setisDisable(false)
+
                     }, 3000);
                }}
                style={{
@@ -430,7 +432,7 @@ function LogoAndProfile(props) {
 
 
 
-export default StudyScreen
+export default QuizScreen
 
 const styles = StyleSheet.create({
      linearGradian: {

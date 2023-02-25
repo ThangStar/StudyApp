@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { LinearGradient } from 'expo-linear-gradient'
 import Color from '../value/Color'
-import { Avatar, Box, Divider, HStack, IconButton, VStack } from '@react-native-material/core'
+import { Avatar, Box, Divider, HStack, IconButton, useTheme, VStack } from '@react-native-material/core'
 import Icon from 'react-native-vector-icons/Ionicons'
 import AnimatedLottieView from 'lottie-react-native'
 import StyleGloble from '../style/StyleGloble'
@@ -38,6 +38,7 @@ const HomeScreen = ({ route }) => {
           }
           GetTitleCourse()
      }, [])
+
      return (
           <SafeAreaView style={{ flex: 1 }}>
                <StatusBar style='light' />

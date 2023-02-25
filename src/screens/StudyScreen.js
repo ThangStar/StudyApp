@@ -27,16 +27,16 @@ import { BaseURL } from '../network/Request'
 const StudyScreen = ({ navigation }) => {
 
   const [titleCourse, setTitleCourse] = useState([])
-  const [numberWord, setNumberWord] = useState('0')
-
+  const [numberWord, setNumberWord] = useState(0)
   //get data number studied once 
   useEffect(() => {
     const GetDataFromStorage = async (key) => {
       try {
         const value = await AsyncStorage.getItem(key)
         if (value !== null) {
-          console.log("VALUE IS: " + value);
-          setNumberWord(value.toString())
+          const idInterval = setInterval(() => {
+            setNumberWord(value)
+          }, 10);
         }
       } catch (e) {
         console.log(String.SAVE_DATA_ERROR);

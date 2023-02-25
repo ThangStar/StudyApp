@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react';
+import { AppState } from 'react-native';
 import Main from './src/Main'
+import { ThemeContext, useTheme } from '@react-native-material/core'
 
 const App = () => {
   return (
@@ -11,5 +12,3 @@ const App = () => {
 }
 
 export default App
-
-const styles = StyleSheet.create({})
