@@ -9,6 +9,8 @@ import LoginScreen from './screens/LoginScreen'
 import AuthScreen from './screens/AuthScreen'
 import QuizScreen from './screens/quizs/QuizScreen'
 import ResultCourseScreen from './screens/details/ResultCourseScreen'
+import CourseManagerScreen from './screens/CourseManagerScreen'
+import WordManagerScreen from './screens/WordManagerScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -28,6 +30,10 @@ const Main = () => {
                          component={QuizScreen} />
                     <Stack.Screen name="ResultCourseScreen"
                          component={ResultCourseScreen} />
+                    <Stack.Screen name="CourseManagerScreen"
+                         component={CourseManagerScreen} />
+                    <Stack.Screen name="WordManagerScreen"
+                         component={WordManagerScreen} />
                </Stack.Navigator>
           </NavigationContainer>
      )

@@ -9,51 +9,66 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import MySwitch from '../components/MySwitch'
 import Color from '../value/Color'
 
-const UtilsSetting = [
-     {
-          title: "Âm thanh",
-          iconName: "volume-medium"
-     },
-     {
-          title: "Rung",
-          iconName: "phone-portrait"
-     }
-]
 
-const UtilsOther = [
-     {
-          title: "Thông tin ứng dụng",
-          iconName: "information-circle"
-     },
-     {
-          title: "Báo lỗi",
-          iconName: "bug"
-     }
-]
-
-const HistoryStudy = [
-     {
-          name: "Số từ đã học",
-          value: 60,
-          colorBackground: Color.item1
-     },
-     {
-          name: "Thời gian học",
-          value: "60 phút",
-          colorBackground: Color.item2
-
-     },
-     {
-          name: "Thành tích",
-          value: 60,
-          colorBackground: Color.item3
-
-     },
-]
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
      var yOffset = useRef(new Animated.Value(0)).current
 
-     const theme = useTheme()
+     //data
+     const UtilsAuth = [
+          {
+               title: "Quản lí khóa học",
+               iconName: "book",
+               onPress: () => navigation.navigate('CourseManagerScreen')
+          },
+          {
+               title: "Quản lí người dùng",
+               iconName: "people-circle",
+          }
+     ]
+     
+     const UtilsSetting = [
+          {
+               title: "Âm thanh",
+               iconName: "volume-medium"
+          },
+          {
+               title: "Rung",
+               iconName: "phone-portrait"
+          }
+     ]
+     
+     const UtilsOther = [
+          {
+               title: "Thông tin ứng dụng",
+               iconName: "information-circle"
+          },
+          {
+               title: "Báo lỗi",
+               iconName: "bug"
+          }
+     ]
+     
+     const HistoryStudy = [
+          {
+               name: "Số từ đã học",
+               value: 60,
+               colorBackground: Color.item1
+          },
+          {
+               name: "Thời gian học",
+               value: "60 phút",
+               colorBackground: Color.item2
+     
+          },
+          {
+               name: "Thành tích",
+               value: 60,
+               colorBackground: Color.item3
+     
+          },
+     ]
+
+     //event auth
      return (
           <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: Color.onPrimary }}>
                <StatusBar style='light' />
@@ -127,10 +142,14 @@ const ProfileScreen = () => {
                          <View style={{
                               marginTop: 16,
                          }}>
+                               <Text style={[StyleGloble.textLeading2, { textAlign: 'left', opacity: 0.5, paddingVertical: 12 }]}>Chức năng</Text>
+                              <ContainerItemUtils titleArray={UtilsAuth} />
+
                               <Text style={[StyleGloble.textLeading2, { textAlign: 'left', opacity: 0.5, paddingVertical: 12 }]}>Cài đặt</Text>
                               <ContainerItemUtils titleArray={UtilsSetting} isHaveTheme={true} />
                               <Text style={[StyleGloble.textLeading2, { textAlign: 'left', opacity: 0.5, paddingVertical: 12 }]}>Khác</Text>
                               <ContainerItemUtils titleArray={UtilsOther} />
+                             
                          </View>
                     </LinearGradient>
                </ScrollView>
@@ -195,7 +214,7 @@ const ContainerItemUtils = (props) => {
 const ItenUtils = (props) => {
      let { value } = props
      return (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => value.onPress()}>
                <View style={{
                     flexDirection: 'row',
                     paddingVertical: 12,
