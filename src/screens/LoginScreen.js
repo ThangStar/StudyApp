@@ -13,18 +13,19 @@ const windowHeight = Dimensions.get('window').height;
 
 const onSubmit = async (data, navigation, setIsProgress) => {
      setIsProgress(true)
-     const res = await Request.post('/login', {
+     const dataLogin = {
           username: data.userName,
           password: data.passWord
-     })
+     }
+     const res = await Request.post('/login', dataLogin)
      if (res.data.length > 0) {
           //save data 
 
           //login success!
-          var usernamePush = await LocalStorage.PushDataFromStorage("INFO_USER", JSON.stringify(res.data))
+          var usernamePush = await LocalStorage.PushDataFromStorage("INFO_USER", JSON.stringify(dataLogin))
           console.log(usernamePush);
           navigation.navigate('BottomTabHome', {
-               infoUser: res.data[0]
+               infoUser: res.data
           })
      } else {
           //login faile!
@@ -56,8 +57,8 @@ const LoginScreen = (props) => {
           const initDataLogin = async () => {
                var infoUser = await LocalStorage.GetDataFromStorage("INFO_USER")
                if (infoUser != "NO VALUE") {
-                    setValue('userName', JSON.parse(infoUser)[0].username)
-                    setValue('passWord', JSON.parse(infoUser)[0].password)
+                    setValue('userName', JSON.parse(infoUser).username)
+                    setValue('passWord', JSON.parse(infoUser).password)
                }
           }
           initDataLogin()

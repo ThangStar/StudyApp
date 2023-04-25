@@ -45,6 +45,10 @@ const ProfileScreen = ({navigation}) => {
           {
                title: "Báo lỗi",
                iconName: "bug"
+          }, {
+               title: "Đăng xuất",
+               iconName: "log-out",
+               onPress: () => navigation.navigate('AuthScreen')
           }
      ]
      

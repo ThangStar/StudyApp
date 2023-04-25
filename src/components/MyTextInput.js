@@ -28,10 +28,15 @@ const MyTextInput = (props) => {
                name={nameController}
                control={control}
                render={({ field: { name, onBlur, onChange, value } }) =>
-                    <Input name={name} onBlur={onBlur}
+                    <Input
+                         nameIconPassEnable={nameIconPassEnable}
+                         nameIconPassDisable={nameIconPassDisable}
+                         name={name} onBlur={onBlur}
                          onChange={onChange} value={value}
                          isShowPass={isShowPass}
+                         setIsShowPass={setIsShowPass}
                          handleSubmit={handleSubmit}
+                         isInputting={isInputting}
                          setIsInputting={setIsInputting}
                          errors={errors} {...props} />
                }
@@ -43,7 +48,8 @@ const MyTextInput = (props) => {
 const Input = (props) => {
      let { name, onChange, onBlur, value, label, isShowPass,
           nameIconPassDisable, nameIconPassEnable, handleSubmit, errors,
-          isInputting, icon, setIsInputting, nameController, contentError} = props
+          isInputting, icon, setIsInputting, nameController, contentError,
+          setIsShowPass } = props
      return (
           <View>
 
@@ -83,9 +89,11 @@ const Input = (props) => {
                               justifyContent: "center",
                               alignItems: "center",
                          }}>
-                              <Icon name={
-                                   isShowPass ? nameIconPassEnable : nameIconPassDisable
-                              } color={"white"} size={24}
+                              <Icon
+                                   onPress={() => setIsShowPass(!isShowPass)}
+                                   name={
+                                        isShowPass ? nameIconPassDisable : nameIconPassEnable
+                                   } color={"white"} size={24}
                               />
 
                          </View>
